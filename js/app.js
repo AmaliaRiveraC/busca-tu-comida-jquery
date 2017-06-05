@@ -110,6 +110,7 @@ var plantillaRestaurantes =
 
 var cargarPagina = function () {
   $("#buscando").click(filtrarRestaurantes);
+  $(".enlace").click(reemplazarUbicacion);
 };
 
 
@@ -119,6 +120,7 @@ var filtrarRestaurantes = function (e) {
   var restaurantesFiltrados = restaurantes.filter(function (restoran) {
     return restoran.nombre.toLowerCase().indexOf(busqueda) >= 0;
   });
+  reemplazarUbicacion(ubicacionRestoran);
   mostrarRestaurantes(restaurantesFiltrados);
 };
 
@@ -129,9 +131,17 @@ var mostrarRestaurantes = function (restaurantes) {
       .replace("__tipo__", restoran.tipo)
       .replace("__direccion__", restoran.direccion)
       .replace("__foto__", restoran.foto)
-      .replace("__coordenadas__", restoran.coordenadas)
+      .replace("__coordenadas__", restoran.coordenadas.lat + ", " + restoran.coordenadas.lng)
   });
   $(".contenedor").html(plantillaFinal);
+};
+
+var reemplazarUbicacion = function() {
+   
+  var coordenadasRestoran =  $(this).parent();
+    console.log($(this).parents(".card").children(".card-section").childre("p"));
+  
+     
 };
 
 $(document).ready(cargarPagina);
