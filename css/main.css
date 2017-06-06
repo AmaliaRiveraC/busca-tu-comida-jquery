@@ -1,5 +1,5 @@
-#map {
-  height: 400px;
+.map {
+  height: 50vh;
   width: 60%;
 }
 
@@ -10,4 +10,9 @@
 
 .card img {
   width: 100%;
+  height: 30vh;
+}
+
+.restoran {
+  cursor: pointer;
 }
