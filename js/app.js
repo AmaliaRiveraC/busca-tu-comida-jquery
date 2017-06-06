@@ -1,35 +1,59 @@
-function initMap() {
-  var uluru = {
-    lat: 23.3847514,
-    lng: -111.5833876
-  };
-  var map = new google.maps.Map(document.getElementById('map'), {
-    zoom: 4,
-    center: uluru
-  });
+var reemplazarUbicacion = function () {
 
+  var latitud = $(this).data("latitud");
+  var longitud = $(this).data("longitud");
+
+  var coordenadas = {
+    lat: latitud,
+    lng: longitud
+  }
+
+  mostrarMapa(coordenadas);
+};
+
+var mostrarMapa = function (coordenadas) {
+
+  var map = new google.maps.Map($('.map')[0], {
+    zoom: 17,
+    center: coordenadas
+  });
+  var marker = new google.maps.Marker({
+    position: coordenadas,
+    map: map
+  });
+};
+
+var mostrarPosicionActual = function (position) {
+
+  var coordenadas = {
+    lat: position.coords.latitude,
+    lng: position.coords.longitude
+  };
+  mostrarMapa(coordenadas);
+};
+
+var obtenerUbicacionActual = function () {
   // Try HTML5 geolocation.
   if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(function (position) {
-
-      var uluru = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude
-      };
-      var map = new google.maps.Map(document.getElementById('map'), {
-        zoom: 17,
-        center: uluru
-      });
-      var marker = new google.maps.Marker({
-        position: uluru,
-        map: map
-      });
-    });
+    navigator.geolocation.getCurrentPosition(mostrarPosicionActual)
   } else {
-    alert('Error: The Geolocation service failed.');
     alert('Error: Your browser doesn\'t support geolocation.');
   }
 }
+
+
+var cargarPagina = function () {
+  obtenerUbicacionActual();
+  $("#buscando").click(filtrarRestaurantes);
+  $(".restoran").click(reemplazarUbicacion);
+};
+
+
+
+
+
+
+
 
 var restaurantes = [
 
@@ -108,10 +132,6 @@ var plantillaRestaurantes =
   '</div>' +
   '</div>';
 
-var cargarPagina = function () {
-  $("#buscando").click(filtrarRestaurantes);
-  $(".enlace").click(reemplazarUbicacion);
-};
 
 
 var filtrarRestaurantes = function (e) {
@@ -120,7 +140,6 @@ var filtrarRestaurantes = function (e) {
   var restaurantesFiltrados = restaurantes.filter(function (restoran) {
     return restoran.nombre.toLowerCase().indexOf(busqueda) >= 0;
   });
-  reemplazarUbicacion(ubicacionRestoran);
   mostrarRestaurantes(restaurantesFiltrados);
 };
 
@@ -136,12 +155,7 @@ var mostrarRestaurantes = function (restaurantes) {
   $(".contenedor").html(plantillaFinal);
 };
 
-var reemplazarUbicacion = function() {
-   
-  var coordenadasRestoran =  $(this).parent();
-    console.log($(this).parents(".card").children(".card-section").childre("p"));
-  
-     
-};
+
+
 
 $(document).ready(cargarPagina);
