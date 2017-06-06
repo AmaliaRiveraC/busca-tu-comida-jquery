@@ -1,4 +1,15 @@
-var reemplazarUbicacion = function () {
+(function() {
+var filtrarRestaurantes = function (e) {
+  e.preventDefault();
+  var busqueda = $("#filtrar").val().toLowerCase();
+  var restaurantesFiltrados = restaurantes.filter(function (restoran) {
+    return restoran.nombre.toLowerCase().indexOf(busqueda) >= 0;
+  });
+  mostrarRestaurantes(restaurantesFiltrados);
+  
+};
+  
+  var reemplazarUbicacion = function () {
 
   var latitud = $(this).data("latitud");
   var longitud = $(this).data("longitud");
@@ -44,7 +55,7 @@ var obtenerUbicacionActual = function () {
 
 var cargarPagina = function () {
   obtenerUbicacionActual();
-  $("#buscando").click(filtrarRestaurantes);
+  $("#filtrar").keyup(filtrarRestaurantes);
   $(".restoran").click(reemplazarUbicacion);
 };
 
@@ -113,8 +124,8 @@ var restaurantes = [
     "direccion": "Dr José María Vertiz 1111, Vértiz Narvarte, 03600 Benito Juárez, CDMX",
     "foto": "assets/libanesa.jpg",
     "coordenadas": {
-      lat: 19.3811153,
-      lng: -99.1553454
+      lat: "19.3811153",
+      lng: "-99.1553454"
     }
 	}
 ];
@@ -122,7 +133,7 @@ var restaurantes = [
 var plantillaRestaurantes =
   '<div class="card">' +
   '<div class="card-divider">' +
-  '<h4>__nombre__</h4>' +
+  '<h4 class="restoran" data-latitud="__lat__" data-longitud="__lng__">__nombre__</h4>' +
   '</div>' +
   '<img src="__foto__">' +
   '<div class="card-section">' +
@@ -134,14 +145,7 @@ var plantillaRestaurantes =
 
 
 
-var filtrarRestaurantes = function (e) {
-  e.preventDefault();
-  var busqueda = $("#filtrar").val().toLowerCase();
-  var restaurantesFiltrados = restaurantes.filter(function (restoran) {
-    return restoran.nombre.toLowerCase().indexOf(busqueda) >= 0;
-  });
-  mostrarRestaurantes(restaurantesFiltrados);
-};
+
 
 var mostrarRestaurantes = function (restaurantes) {
   var plantillaFinal = "";
@@ -151,11 +155,12 @@ var mostrarRestaurantes = function (restaurantes) {
       .replace("__direccion__", restoran.direccion)
       .replace("__foto__", restoran.foto)
       .replace("__coordenadas__", restoran.coordenadas.lat + ", " + restoran.coordenadas.lng)
+      .replace("__lat__", restoran.coordenadas.lat)
+      .replace("--lng__", restoran.coordenadas.lng)
   });
   $(".contenedor").html(plantillaFinal);
 };
 
-
-
-
+$(document).on("click", ".restoran", reemplazarUbicacion);
 $(document).ready(cargarPagina);
+  })();
